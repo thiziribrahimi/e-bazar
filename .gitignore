@@ -1,0 +1,4 @@
+/config/db.php
+/public/assets/uploads/*
+!/public/assets/uploads/.gitkeep
+.DS_Store
