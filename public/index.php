@@ -64,7 +64,17 @@ switch ($page) {
         require_once '../src/controllers/annoncecontroller.php';
         handleAddAnnonce($pdo);
         break;
-        
+
+    case 'dashboard':
+        require_once '../src/controllers/usercontroller.php';
+        dashboard($pdo);
+        break;
+
+    case 'delete':
+        require_once '../src/controllers/annoncecontroller.php';
+        deleteUserAnnonce($pdo);
+        break;
+
     default:
         echo "<div class='alert alert-danger'>Page 404 : Introuvable</div>";
         break;

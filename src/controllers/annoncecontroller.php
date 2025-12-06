@@ -44,4 +44,31 @@ function handleAddAnnonce($pdo) {
     header('Location: index.php?page=home');
     exit;
 }
+function deleteUserAnnonce($pdo) {
+   
+    if (!isset($_SESSION['user_id']) || !isset($_GET['id'])) {
+        header('Location: index.php?page=login');
+        exit;
+    }
+
+    $id = $_GET['id'];
+    $userId = $_SESSION['user_id'];
+
+   
+    $annonce = getAnnonceById($pdo, $id);
+
+    if ($annonce && $annonce['user_id'] == $userId) {
+        
+       
+        if ($annonce['photo'] && file_exists('assets/uploads/' . $annonce['photo'])) {
+            unlink('assets/uploads/' . $annonce['photo']);
+        }
+
+        deleteAnnonce($pdo, $id);
+    }
+
+  
+    header('Location: index.php?page=dashboard');
+    exit;
+}
 ?>

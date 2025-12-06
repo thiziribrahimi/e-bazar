@@ -1,7 +1,7 @@
 <?php
 
 require_once '../src/models/user.php';
-
+require_once '../src/models/annonce.php';
 
 function register() {
     require_once '../src/views/auth/register.php';
@@ -61,5 +61,30 @@ function logout() {
     session_destroy();
     header('Location: index.php?page=home');
     exit;
+}
+
+function dashboard($pdo) {
+
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: index.php?page=login');
+        exit;
+    }
+
+    
+    $myAnnonces = getAnnoncesByUser($pdo, $_SESSION['user_id']);
+
+    
+    $activeAnnonces = [];
+    $soldAnnonces = [];
+
+    foreach ($myAnnonces as $annonce) {
+        if ($annonce['status'] === 'active') {
+            $activeAnnonces[] = $annonce;
+        } else {
+            $soldAnnonces[] = $annonce;
+        }
+    }
+
+    require_once '../src/views/auth/dashboard.php';
 }
 ?>

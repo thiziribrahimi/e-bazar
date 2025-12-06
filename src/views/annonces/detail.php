@@ -1,9 +1,17 @@
 <div class="row mt-4">
     <div class="col-md-6">
         <div class="card shadow-sm">
-            <img src="assets/uploads/default.jpg" class="img-fluid rounded" alt="Photo du produit">
-        </div>
-    </div>
+    <?php if (!empty($annonce['photo'])): ?>
+        <img src="assets/uploads/<?= htmlspecialchars($annonce['photo']) ?>" 
+             class="img-fluid rounded" 
+             alt="Photo du produit"
+             style="width: 100%; max-height: 500px; object-fit: contain; background: #f8f9fa;">
+    <?php else: ?>
+        <img src="https://via.placeholder.com/800x600?text=Pas+de+photo" 
+             class="img-fluid rounded" 
+             alt="Image par défaut">
+    <?php endif; ?>
+</div>
 
     <div class="col-md-6">
         <span class="badge bg-secondary mb-2"><?= htmlspecialchars($annonce['category_name']) ?></span>

@@ -47,4 +47,22 @@ function createAnnonce($pdo, $userId, $categoryId, $title, $description, $price,
         'delivery' => $delivery
     ]);
 }
+// Récupérer les annonces d'un utilisateur spécifique
+function getAnnoncesByUser($pdo, $userId) {
+    $sql = "SELECT annonces.*, categories.label as category_name 
+            FROM annonces 
+            JOIN categories ON annonces.category_id = categories.id 
+            WHERE user_id = :user_id 
+            ORDER BY created_at DESC";
+            
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['user_id' => $userId]);
+    return $stmt->fetchAll();
+}
+// Supprimer une annonce
+function deleteAnnonce($pdo, $id) {
+    $sql = "DELETE FROM annonces WHERE id = :id";
+    $stmt = $pdo->prepare($sql);
+    return $stmt->execute(['id' => $id]);
+}
 ?>

@@ -16,7 +16,11 @@
     
     <?php if (isset($_SESSION['user_id'])): ?>
         <li class="nav-item">
-            <span class="nav-link text-warning">Bonjour <?= htmlspecialchars($_SESSION['user_email']) ?></span>
+            <li class="nav-item">
+    <a class="nav-link text-warning fw-bold" href="index.php?page=dashboard">
+         Mon Compte (<?= htmlspecialchars($_SESSION['user_email']) ?>)
+    </a>
+</li>
             <li class="nav-item">
     <a class="nav-link fw-bold text-white btn btn-success px-3 mx-2" href="index.php?page=add">+ Déposer une annonce</a>
 </li>
