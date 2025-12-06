@@ -55,6 +55,16 @@ switch ($page) {
         showDetail($pdo);
         break;
    
+        case 'add':
+        require_once '../src/controllers/annoncecontroller.php';
+        addAnnonce($pdo);
+        break;
+
+    case 'handle_add':
+        require_once '../src/controllers/annoncecontroller.php';
+        handleAddAnnonce($pdo);
+        break;
+        
     default:
         echo "<div class='alert alert-danger'>Page 404 : Introuvable</div>";
         break;
