@@ -18,16 +18,36 @@ if (!$isJson) {
 
 
 switch ($page) {
+
     case 'home':
-        require_once '../src/views/home.php';
+        require_once '../src/controllers/homecontroller.php';
+        displayHome($pdo);
         break;
 
+    // --- GESTION UTILISATEURS ---
     case 'login':
-        echo "<h2>Page de connexion (à faire)</h2>";
+        require_once '../src/controllers/usercontroller.php';
+        login();
+        break;
+        
+    case 'handle_login': 
+        require_once '../src/controllers/usercontroller.php';
+        handleLogin($pdo);
         break;
 
     case 'register':
-        echo "<h2>Page d'inscription (à faire)</h2>";
+        require_once '../src/controllers/usercontroller.php';
+        register();
+        break;
+        
+    case 'handle_register': 
+        require_once '../src/controllers/usercontroller.php';
+        handleRegister($pdo);
+        break;
+        
+    case 'logout':
+        require_once '../src/controllers/usercontroller.php';
+        logout();
         break;
 
     default:
