@@ -50,6 +50,11 @@ switch ($page) {
         logout();
         break;
 
+    case 'detail':
+        require_once '../src/controllers/annoncecontroller.php';
+        showDetail($pdo);
+        break;
+   
     default:
         echo "<div class='alert alert-danger'>Page 404 : Introuvable</div>";
         break;

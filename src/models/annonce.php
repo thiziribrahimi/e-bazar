@@ -15,4 +15,17 @@ function getAllAnnonces($pdo) {
         return [];
     }
 }
+
+// Récupérer une seule annonce par son ID
+function getAnnonceById($pdo, $id) {
+    $sql = "SELECT annonces.*, categories.label as category_name, users.email as seller_email 
+            FROM annonces 
+            JOIN categories ON annonces.category_id = categories.id 
+            JOIN users ON annonces.user_id = users.id
+            WHERE annonces.id = :id";
+            
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['id' => $id]);
+    return $stmt->fetch();
+}
 ?>
