@@ -3,35 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>e-bazar</title>
+    <title>e-bazar - Petites annonces</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        
+        body { background-color: #f8f9fa; }
+        
+        
+        .navbar { background-color: #ffffff; border-bottom: 1px solid #e9ecef; }
+        
+      
+        .brand-logo { color: #0d6efd; font-weight: 800; letter-spacing: -0.5px; }
+       
+        .card { border: none; transition: transform 0.2s, box-shadow 0.2s; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; }
+    </style>
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
-        <div class="container">
-            <a class="navbar-brand" href="index.php?page=home">e-bazar</a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ms-auto">
-    <li class="nav-item"><a class="nav-link" href="index.php?page=home">Accueil</a></li>
+<body class="d-flex flex-column min-vh-100">
     
-    <?php if (isset($_SESSION['user_id'])): ?>
-        <li class="nav-item">
-            <li class="nav-item">
-    <a class="nav-link text-warning fw-bold" href="index.php?page=dashboard">
-         Mon Compte (<?= htmlspecialchars($_SESSION['user_email']) ?>)
-    </a>
-</li>
-            <li class="nav-item">
-    <a class="nav-link fw-bold text-white btn btn-success px-3 mx-2" href="index.php?page=add">+ Déposer une annonce</a>
-</li>
-        </li>
-        <li class="nav-item"><a class="nav-link" href="index.php?page=logout">Déconnexion</a></li>
-    <?php else: ?>
-        <li class="nav-item"><a class="nav-link" href="index.php?page=login">Connexion</a></li>
-        <li class="nav-item"><a class="nav-link" href="index.php?page=register">Inscription</a></li>
-    <?php endif; ?>
-</ul>
+    <nav class="navbar navbar-expand-lg navbar-light shadow-sm sticky-top py-3">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center brand-logo" href="index.php?page=home">
+                <span class="fs-4 me-2"></span> e-bazar
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    
+                    <li class="nav-item">
+                        <a class="nav-link text-secondary fw-bold mx-2" href="index.php?page=home">Accueil</a>
+                    </li>
+
+                    <?php if (isset($_SESSION['user_id'])): ?>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark fw-bold mx-2" href="index.php?page=dashboard">
+                                Mon Compte
+                            </a>
+                        </li>
+
+                        <li class="nav-item ms-lg-2">
+                            <a class="btn btn-primary fw-bold px-4 rounded-pill shadow-sm" href="index.php?page=add">
+                                + Vendre un objet
+                            </a>
+                        </li>
+
+                        <li class="nav-item ms-lg-3">
+                            <a class="btn btn-outline-danger btn-sm rounded-pill" href="index.php?page=logout">Déconnexion</a>
+                        </li>
+
+                    <?php else: ?>
+                        <li class="nav-item ms-lg-2">
+                            <a class="btn btn-outline-primary px-3 rounded-pill" href="index.php?page=login">Se connecter</a>
+                        </li>
+                        <li class="nav-item ms-lg-2">
+                            <a class="btn btn-primary px-3 rounded-pill" href="index.php?page=register">S'inscrire</a>
+                        </li>
+                    <?php endif; ?>
+
+                </ul>
             </div>
         </div>
     </nav>
-    <div class="container">
+
+    <div class="container flex-grow-1 mt-4">

@@ -1,9 +1,9 @@
 <?php
 
+
 session_start();
-
-
 require_once '../config/db.php';
+// ... le reste du fichier ne change pas ...
 
 
 $page = $_GET['page'] ?? 'home';
@@ -73,6 +73,16 @@ switch ($page) {
     case 'delete':
         require_once '../src/controllers/annoncecontroller.php';
         deleteUserAnnonce($pdo);
+        break;
+     
+    case 'buy':
+        require_once '../src/controllers/annoncecontroller.php';
+        buy($pdo);
+        break;
+
+    case 'handle_buy':
+        require_once '../src/controllers/annoncecontroller.php';
+        handleBuy($pdo);
         break;
 
     default:

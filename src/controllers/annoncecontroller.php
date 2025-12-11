@@ -71,4 +71,46 @@ function deleteUserAnnonce($pdo) {
     header('Location: index.php?page=dashboard');
     exit;
 }
+// Afficher la page de confirmation d'achat
+function buy($pdo) {
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: index.php?page=login');
+        exit;
+    }
+
+   
+    if (!isset($_GET['id'])) { die("Erreur : ID manquant"); }
+    
+    $id = $_GET['id'];
+    $annonce = getAnnonceById($pdo, $id);
+
+   
+    if (!$annonce || $annonce['status'] !== 'active') {
+        echo "<div class='alert alert-danger'>Désolé, cet objet n'est plus disponible.</div>";
+        return;
+    }
+
+   
+    if ($annonce['user_id'] == $_SESSION['user_id']) {
+        echo "<div class='alert alert-warning'>Vous ne pouvez pas acheter votre propre annonce !</div>";
+        return;
+    }
+
+    
+    require_once '../src/views/annonces/buy.php';
+}
+
+
+function handleBuy($pdo) {
+   
+    if (!isset($_SESSION['user_id']) || !isset($_POST['annonce_id'])) {
+        header('Location: index.php?page=home');
+        exit;
+    }
+
+    markAnnonceAsSold($pdo, $_POST['annonce_id'], $_SESSION['user_id']);
+
+    header('Location: index.php?page=dashboard');
+    exit;
+}
 ?>

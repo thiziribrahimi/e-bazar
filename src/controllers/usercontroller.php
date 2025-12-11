@@ -62,17 +62,16 @@ function logout() {
     header('Location: index.php?page=home');
     exit;
 }
-
 function dashboard($pdo) {
-
     if (!isset($_SESSION['user_id'])) {
         header('Location: index.php?page=login');
         exit;
     }
 
-    
-    $myAnnonces = getAnnoncesByUser($pdo, $_SESSION['user_id']);
+    $userId = $_SESSION['user_id'];
 
+    // 1. Récupérer ce que j'ai mis en vente (Active + Vendue)
+    $myAnnonces = getAnnoncesByUser($pdo, $userId);
     
     $activeAnnonces = [];
     $soldAnnonces = [];
@@ -81,9 +80,12 @@ function dashboard($pdo) {
         if ($annonce['status'] === 'active') {
             $activeAnnonces[] = $annonce;
         } else {
-            $soldAnnonces[] = $annonce;
+            $soldAnnonces[] = $annonce; // C'est ici que vont les objets vendus !
         }
     }
+
+    // 2. Récupérer ce que j'ai acheté
+    $boughtAnnonces = getAnnoncesBoughtByUser($pdo, $userId);
 
     require_once '../src/views/auth/dashboard.php';
 }
