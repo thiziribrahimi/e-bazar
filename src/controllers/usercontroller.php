@@ -1,33 +1,7 @@
 <?php
 
 require_once '../src/models/user.php';
-require_once '../src/models/annonce.php';
-
-function register() {
-    require_once '../src/views/auth/register.php';
-}
-
-
-function handleRegister($pdo) {
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-
- 
-    if (empty($email) || empty($password)) {
-        echo "Veuillez remplir tous les champs.";
-        return;
-    }
-
-
-    try {
-        createUser($pdo, $email, $password);
-        // Redirection vers le login après succès
-        header('Location: index.php?page=login');
-        exit;
-    } catch (Exception $e) {
-        echo "Erreur (Email déjà pris ?) : " . $e->getMessage();
-    }
-}
+require_once '../src/models/annonce.php'; 
 
 
 function login() {
@@ -35,33 +9,16 @@ function login() {
 }
 
 
-function handleLogin($pdo) {
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    
-    $user = getUserByEmail($pdo, $email);
-
-   
-    if ($user && password_verify($password, $user['password'])) {
-        
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['user_role'] = $user['role'];
-        $_SESSION['user_email'] = $user['email'];
-        
-        header('Location: index.php?page=home');
-        exit;
-    } else {
-        echo "<div class='alert alert-danger'>Email ou mot de passe incorrect.</div>";
-        login();
-    }
+function register() {
+    require_once '../src/views/auth/register.php';
 }
-
 
 function logout() {
     session_destroy();
     header('Location: index.php?page=home');
     exit;
 }
+
 function dashboard($pdo) {
     if (!isset($_SESSION['user_id'])) {
         header('Location: index.php?page=login');
@@ -70,7 +27,6 @@ function dashboard($pdo) {
 
     $userId = $_SESSION['user_id'];
 
-    // 1. Récupérer ce que j'ai mis en vente (Active + Vendue)
     $myAnnonces = getAnnoncesByUser($pdo, $userId);
     
     $activeAnnonces = [];
@@ -80,13 +36,63 @@ function dashboard($pdo) {
         if ($annonce['status'] === 'active') {
             $activeAnnonces[] = $annonce;
         } else {
-            $soldAnnonces[] = $annonce; // C'est ici que vont les objets vendus !
+            $soldAnnonces[] = $annonce; 
         }
     }
 
-    // 2. Récupérer ce que j'ai acheté
-    $boughtAnnonces = getAnnoncesBoughtByUser($pdo, $userId);
+   
+    $boughtAnnonces = [];
+    if (function_exists('getAnnoncesBoughtByUser')) {
+        $boughtAnnonces = getAnnoncesBoughtByUser($pdo, $userId);
+    }
 
     require_once '../src/views/auth/dashboard.php';
+}
+
+
+function handleRegister($pdo) {
+    header('Content-Type: application/json');
+
+    if (empty($_POST['email']) || empty($_POST['password'])) {
+        echo json_encode(['status' => 'error', 'message' => 'Tous les champs sont obligatoires']);
+        exit;
+    }
+
+  
+    $existingUser = getUserByEmail($pdo, $_POST['email']);
+    if ($existingUser) {
+        echo json_encode(['status' => 'error', 'message' => 'Cet email est déjà utilisé']);
+        exit;
+    }
+
+    $passHash = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    
+    $res = createUser($pdo, $_POST['email'], $passHash);
+
+    if ($res) {
+        echo json_encode(['status' => 'success', 'redirect' => 'index.php?page=login']);
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'Erreur lors de l\'inscription']);
+    }
+    exit;
+}
+
+function handleLogin($pdo) {
+    header('Content-Type: application/json');
+
+    $email = $_POST['email'];
+    $pass = $_POST['password'];
+    
+    $user = getUserByEmail($pdo, $email);
+
+    if ($user && password_verify($pass, $user['password'])) {
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['user_email'] = $user['email'];
+        
+        echo json_encode(['status' => 'success', 'redirect' => 'index.php?page=dashboard']);
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'Email ou mot de passe incorrect']);
+    }
+    exit;
 }
 ?>

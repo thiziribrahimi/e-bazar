@@ -5,7 +5,7 @@
                 <h3>Connexion</h3>
             </div>
             <div class="card-body">
-                <form action="index.php?page=handle_login" method="POST">
+                <form action="index.php?page=handle_login" method="POST" class="ajax-form">
                     <div class="mb-3">
                         <label>Email</label>
                         <input type="email" name="email" class="form-control" required>

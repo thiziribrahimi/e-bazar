@@ -1,41 +1,43 @@
 <?php
-// src/models/annonce.php
 
-// 1. Récupérer toutes les catégories (pour le formulaire de dépôt)
+
+// 1. Récupérer toutes les catégories
 function getAllCategories($pdo) {
     return $pdo->query("SELECT * FROM categories ORDER BY label")->fetchAll();
 }
 
-// 2. Récupérer les annonces actives (pour la page d'accueil)
+// 2. Récupérer toutes les annonces ACTIVES 
 function getAllAnnonces($pdo) {
     $sql = "SELECT annonces.*, categories.label as category_name 
             FROM annonces 
-            JOIN categories ON annonces.category_id = categories.id 
-            WHERE status = 'active' 
-            ORDER BY created_at DESC";
+            LEFT JOIN categories ON annonces.category_id = categories.id 
+            WHERE annonces.status = 'active' 
+            ORDER BY annonces.created_at DESC";
+    
     try {
-        return $pdo->query($sql)->fetchAll();
+        $stmt = $pdo->query($sql);
+        return $stmt->fetchAll();
     } catch (PDOException $e) {
-        return [];
+        die("ERREUR SQL : " . $e->getMessage());
     }
 }
 
-// 3. Récupérer une seule annonce par ID (pour la page détail et achat)
+// 3. Récupérer une annonce par ID
 function getAnnonceById($pdo, $id) {
     $sql = "SELECT annonces.*, categories.label as category_name, users.email as seller_email 
             FROM annonces 
-            JOIN categories ON annonces.category_id = categories.id 
-            JOIN users ON annonces.user_id = users.id
+            LEFT JOIN categories ON annonces.category_id = categories.id 
+            LEFT JOIN users ON annonces.user_id = users.id
             WHERE annonces.id = :id";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['id' => $id]);
     return $stmt->fetch();
 }
 
-// 4. Créer une annonce (Dépôt)
+// 4. Créer une annonce
 function createAnnonce($pdo, $userId, $categoryId, $title, $description, $price, $imageName, $delivery) {
-    $sql = "INSERT INTO annonces (user_id, category_id, title, description, price, photo, delivery_mode, status) 
-            VALUES (:user_id, :category_id, :title, :description, :price, :photo, :delivery, 'active')";
+    $sql = "INSERT INTO annonces (user_id, category_id, title, description, price, photo, delivery_mode, status, created_at) 
+            VALUES (:user_id, :category_id, :title, :description, :price, :photo, :delivery, 'active', NOW())";
     
     $stmt = $pdo->prepare($sql);
     return $stmt->execute([
@@ -49,11 +51,11 @@ function createAnnonce($pdo, $userId, $categoryId, $title, $description, $price,
     ]);
 }
 
-// 5. Récupérer les annonces d'un utilisateur (pour le Dashboard - Mes Ventes)
+// 5. Récupérer les annonces d'un utilisateur
 function getAnnoncesByUser($pdo, $userId) {
     $sql = "SELECT annonces.*, categories.label as category_name 
             FROM annonces 
-            JOIN categories ON annonces.category_id = categories.id 
+            LEFT JOIN categories ON annonces.category_id = categories.id 
             WHERE user_id = :user_id 
             ORDER BY created_at DESC";
             
@@ -69,7 +71,7 @@ function deleteAnnonce($pdo, $id) {
     return $stmt->execute(['id' => $id]);
 }
 
-// 7. Marquer une annonce comme vendue (Achat)
+// 7. Marquer comme vendue
 function markAnnonceAsSold($pdo, $id, $buyerId) {
     $sql = "UPDATE annonces SET status = 'sold', buyer_id = :buyer_id WHERE id = :id";
     $stmt = $pdo->prepare($sql);
@@ -78,11 +80,12 @@ function markAnnonceAsSold($pdo, $id, $buyerId) {
         'buyer_id' => $buyerId
     ]);
 }
-// Récupérer les objets que j'ai achetés
+
+// 8. Mes achats
 function getAnnoncesBoughtByUser($pdo, $userId) {
     $sql = "SELECT annonces.*, categories.label as category_name 
             FROM annonces 
-            JOIN categories ON annonces.category_id = categories.id 
+            LEFT JOIN categories ON annonces.category_id = categories.id 
             WHERE buyer_id = :user_id 
             ORDER BY created_at DESC";
             

@@ -1,97 +1,196 @@
 <?php
 
-
 session_start();
-require_once '../config/db.php';
-// ... le reste du fichier ne change pas ...
 
+require_once '../config/db.php';
 
 $page = $_GET['page'] ?? 'home';
 
 
-// Note : On ne l'affiche pas si on demande du JSON (pour l'AJAX plus tard)
-$isJson = isset($_GET['format']) && $_GET['format'] === 'json';
+$apiRoutes = [
 
-if (!$isJson) {
+    'api_annonces',         
+    'api_confirm_receipt',  
+    'handle_login',         
+    'handle_register',      
+    'handle_add',          
+    'handle_buy'            
+];
+
+$showLayout = !in_array($page, $apiRoutes);
+
+if ($showLayout) {
+
     require_once '../src/views/layout/header.php';
-}
 
+}
 
 switch ($page) {
 
-    case 'home':
+ case 'home':
+     
         require_once '../src/controllers/homecontroller.php';
-        displayHome($pdo);
+        displayHome($pdo); 
         break;
 
-    // --- GESTION UTILISATEURS ---
+    case 'api_annonces': 
+
+        require_once '../src/controllers/homecontroller.php';
+
+        getAnnoncesJSON($pdo);
+
+        break;
+
+
+
     case 'login':
+
         require_once '../src/controllers/usercontroller.php';
+
         login();
+
         break;
-        
-    case 'handle_login': 
-        require_once '../src/controllers/usercontroller.php';
-        handleLogin($pdo);
-        break;
+
+
 
     case 'register':
+
         require_once '../src/controllers/usercontroller.php';
+
         register();
+
         break;
+
         
-    case 'handle_register': 
-        require_once '../src/controllers/usercontroller.php';
-        handleRegister($pdo);
-        break;
-        
+
     case 'logout':
+
         require_once '../src/controllers/usercontroller.php';
+
         logout();
+
         break;
 
-    case 'detail':
-        require_once '../src/controllers/annoncecontroller.php';
-        showDetail($pdo);
-        break;
-   
-        case 'add':
-        require_once '../src/controllers/annoncecontroller.php';
-        addAnnonce($pdo);
-        break;
 
-    case 'handle_add':
-        require_once '../src/controllers/annoncecontroller.php';
-        handleAddAnnonce($pdo);
-        break;
 
     case 'dashboard':
+
         require_once '../src/controllers/usercontroller.php';
+
         dashboard($pdo);
+
         break;
+
+
+
+    case 'handle_login': 
+
+        require_once '../src/controllers/usercontroller.php';
+
+        handleLogin($pdo);
+
+        break;
+
+
+
+    case 'handle_register': 
+
+        require_once '../src/controllers/usercontroller.php';
+
+        handleRegister($pdo);
+
+        break;
+
+
+
+    case 'detail':
+
+        require_once '../src/controllers/annoncecontroller.php';
+
+        showDetail($pdo);
+
+        break;
+
+   
+
+    case 'add':
+
+        require_once '../src/controllers/annoncecontroller.php';
+
+        addAnnonce($pdo);
+
+        break;
+
+
+
+    case 'buy':
+
+        require_once '../src/controllers/annoncecontroller.php';
+
+        buy($pdo);
+
+        break;
+
+
 
     case 'delete':
+
         require_once '../src/controllers/annoncecontroller.php';
+
         deleteUserAnnonce($pdo);
+
         break;
-     
-    case 'buy':
+
+
+
+   
+
+    case 'handle_add':
+
         require_once '../src/controllers/annoncecontroller.php';
-        buy($pdo);
+
+        handleAddAnnonce($pdo);
+
         break;
+
+
 
     case 'handle_buy':
+
         require_once '../src/controllers/annoncecontroller.php';
+
         handleBuy($pdo);
+
         break;
+
+    
+
+    case 'api_confirm_receipt':
+
+        require_once '../src/controllers/annoncecontroller.php';
+
+        confirmReceiptAJAX($pdo);
+
+        break;
+
+
+
+ 
 
     default:
-        echo "<div class='alert alert-danger'>Page 404 : Introuvable</div>";
+
+        echo "<div class='container mt-5'><div class='alert alert-danger'>Page 404 : Introuvable</div></div>";
+
         break;
+
 }
 
 
-if (!$isJson) {
+
+if ($showLayout) {
+
     require_once '../src/views/layout/footer.php';
+
 }
-?>
+
+?> 
