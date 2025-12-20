@@ -62,10 +62,6 @@ function handleRegister($pdo) {
         echo json_encode(['status' => 'error', 'message' => 'Cet email est déjà utilisé']);
         exit;
     }
-
-    // CORRECTION IMPORTANTE :
-    // On récupère le mot de passe brut ($_POST['password']).
-    // On NE LE HACHE PAS ici, car la fonction createUser() dans le modèle s'en charge déjà.
     $passwordRaw = $_POST['password']; 
     
     $res = createUser($pdo, $_POST['email'], $passwordRaw);
@@ -89,8 +85,14 @@ function handleLogin($pdo) {
     if ($user && password_verify($pass, $user['password'])) {
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['user_email'] = $user['email'];
+   
+        $_SESSION['user_role'] = $user['role']; 
         
-        echo json_encode(['status' => 'success', 'redirect' => 'index.php?page=dashboard']);
+        if ($user['role'] === 'admin') {
+            echo json_encode(['status' => 'success', 'redirect' => 'index.php?page=admin_dashboard']);
+        } else {
+            echo json_encode(['status' => 'success', 'redirect' => 'index.php?page=dashboard']);
+        }
     } else {
         echo json_encode(['status' => 'error', 'message' => 'Email ou mot de passe incorrect']);
     }

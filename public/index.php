@@ -29,7 +29,26 @@ switch ($page) {
         require_once '../src/controllers/homecontroller.php';
         displayHome($pdo); 
         break;
+// --- ROUTES ADMINISTRATEUR ---
+    case 'admin_dashboard':
+        require_once '../src/controllers/admincontroller.php';
+        adminDashboard($pdo);
+        break;
 
+    case 'admin_add_category':
+        require_once '../src/controllers/admincontroller.php';
+        adminAddCategory($pdo);
+        break;
+
+    case 'admin_delete_user':
+        require_once '../src/controllers/admincontroller.php';
+        adminDeleteUser($pdo);
+        break;
+
+    case 'admin_delete_annonce':
+        require_once '../src/controllers/admincontroller.php';
+        adminDeleteAnnonce($pdo);
+        break;
     // --- NOUVEAU CASE AJOUTÉ ICI ---
     case 'category':
         require_once '../src/controllers/homecontroller.php';
