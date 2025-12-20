@@ -21,25 +21,75 @@ function addAnnonce($pdo) {
 function handleAddAnnonce($pdo) {
     if (!isset($_SESSION['user_id'])) { die("Accès refusé"); }
 
-    
-    $imageName = null;
-    if (isset($_FILES['photo']) && $_FILES['photo']['error'] == 0) {
-        $ext = pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION);
-        $imageName = uniqid() . '.' . $ext;
+    $uploadedFiles = [];
+    $errors = [];
+
+    if (isset($_FILES['photos']) && !empty($_FILES['photos']['name'][0])) {
         
-        move_uploaded_file($_FILES['photo']['tmp_name'], 'assets/uploads/' . $imageName);
+        $countFiles = count($_FILES['photos']['name']);
+        
+      
+        if ($countFiles > 5) {
+            die("Erreur : Vous ne pouvez envoyer que 5 photos maximum.");
+        }
+
+        for ($i = 0; $i < $countFiles; $i++) {
+            $tmpName = $_FILES['photos']['tmp_name'][$i];
+            $name    = $_FILES['photos']['name'][$i];
+            $size    = $_FILES['photos']['size'][$i];
+            $error   = $_FILES['photos']['error'][$i];
+            $type    = $_FILES['photos']['type'][$i];
+
+            if ($error === 0) {
+               
+                if ($type !== 'image/jpeg' && $type !== 'image/jpg') {
+                    die("Erreur : Le fichier $name n'est pas une image JPEG.");
+                }
+
+                if ($size > 204800) {
+                    die("Erreur : L'image $name dépasse 200 ko.");
+                }
+
+                $ext = pathinfo($name, PATHINFO_EXTENSION);
+                $newName = uniqid() . '_' . $i . '.' . $ext;
+                
+                $uploadedFiles[] = [
+                    'tmp_name' => $tmpName,
+                    'new_name' => $newName
+                ];
+            }
+        }
     }
 
-    createAnnonce(
+    $mainPhotoName = null;
+    if (!empty($uploadedFiles)) {
+        $mainPhotoName = $uploadedFiles[0]['new_name'];
+    }
+
+    $newAnnonceId = createAnnonce(
         $pdo,
         $_SESSION['user_id'],
         $_POST['category_id'],
         $_POST['title'],
         $_POST['description'],
         $_POST['price'],
-        $imageName,
+        $mainPhotoName,
         $_POST['delivery'] 
     );
+
+    if (!$newAnnonceId) {
+        die("Erreur lors de l'enregistrement en base de données.");
+    }
+
+   
+    foreach ($uploadedFiles as $file) {
+        $destPath = 'assets/uploads/' . $file['new_name'];
+        
+        if (move_uploaded_file($file['tmp_name'], $destPath)) {
+           
+            addPhoto($pdo, $newAnnonceId, $file['new_name']);
+        }
+    }
 
     header('Location: index.php?page=home');
     exit;

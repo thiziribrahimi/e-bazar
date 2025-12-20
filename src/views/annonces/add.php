@@ -41,8 +41,11 @@
                     </div>
 
                     <div class="mb-3">
-                        <label>Photo</label>
-                        <input type="file" name="photo" class="form-control" accept="image/jpeg, image/png">
+                        <label class="form-label">Photos (Max 5, JPEG uniquement, Max 200ko)</label>
+                        <input type="file" name="photos[]" class="form-control" multiple accept="image/jpeg">
+                        <div class="form-text text-muted">
+                            Maintenez la touche <strong>Ctrl</strong> (ou Cmd sur Mac) pour sélectionner plusieurs images.
+                        </div>
                     </div>
 
                     <button type="submit" class="btn btn-success w-100">Publier</button>

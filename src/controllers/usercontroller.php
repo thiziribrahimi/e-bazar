@@ -39,7 +39,6 @@ function dashboard($pdo) {
             $soldAnnonces[] = $annonce; 
         }
     }
-
    
     $boughtAnnonces = [];
     if (function_exists('getAnnoncesBoughtByUser')) {
@@ -57,7 +56,6 @@ function handleRegister($pdo) {
         echo json_encode(['status' => 'error', 'message' => 'Tous les champs sont obligatoires']);
         exit;
     }
-
   
     $existingUser = getUserByEmail($pdo, $_POST['email']);
     if ($existingUser) {
@@ -65,9 +63,12 @@ function handleRegister($pdo) {
         exit;
     }
 
-    $passHash = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    // CORRECTION IMPORTANTE :
+    // On récupère le mot de passe brut ($_POST['password']).
+    // On NE LE HACHE PAS ici, car la fonction createUser() dans le modèle s'en charge déjà.
+    $passwordRaw = $_POST['password']; 
     
-    $res = createUser($pdo, $_POST['email'], $passHash);
+    $res = createUser($pdo, $_POST['email'], $passwordRaw);
 
     if ($res) {
         echo json_encode(['status' => 'success', 'redirect' => 'index.php?page=login']);
