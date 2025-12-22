@@ -36,7 +36,7 @@ try {
     die("Erreur de connexion : " . $e->getMessage());
 }
 ?>
-
+---
 ## 🔄 2. Procédure de Mise à Jour (Déploiement)
 
 Voici la procédure pour mettre à jour le site sur la VM après avoir fait un `git push` :
