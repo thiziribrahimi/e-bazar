@@ -1,6 +1,5 @@
 -- Script d'initialisation pour le projet e-bazar
 
-
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
@@ -11,15 +10,15 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de données : `ebazar`
+-- Base de données : `projet`
 --
-CREATE DATABASE IF NOT EXISTS `ebazar` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `ebazar`;
+USE `projet`;
 
 -- --------------------------------------------------------
 
 --
 -- Suppression des tables existantes (Ordre inverse des contraintes)
+-- Permet de relancer le script sans erreur pour remettre la base à zéro.
 --
 DROP TABLE IF EXISTS `photos`;
 DROP TABLE IF EXISTS `annonces`;
@@ -44,7 +43,7 @@ CREATE TABLE `users` (
 --
 -- Contenu de la table `users` (ADMINISTRATEUR PAR DÉFAUT)
 -- Login : admin@bazar.com
--- Le mot de passe est : Admin123
+-- Mot de passe : admin123
 --
 INSERT INTO `users` (`email`, `password`, `role`) VALUES
 ('admin@bazar.com', '$2y$10$5HrBogkiPn6U/VfjtaNcwukHvFdgKNjLBZX8.eJ9vHSA9qHMClrW.', 'admin');
