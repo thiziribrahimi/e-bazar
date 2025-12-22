@@ -23,8 +23,10 @@
                             <td><?= htmlspecialchars($annonce['title']) ?></td>
                             <td class="fw-bold"><?= htmlspecialchars($annonce['price']) ?> €</td>
                             <td>
-                                <span class="badge bg-success">Bien reçu !</span>
-                            </td>
+                               <button class="btn btn-sm btn-warning btn-reception" data-id="<?= $annonce['id'] ?>">
+                               Confirmer la réception
+                               </button>
+                           </td>
                         </tr>
                         <?php endforeach; ?>
                     </tbody>

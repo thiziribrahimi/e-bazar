@@ -76,23 +76,35 @@ function handleRegister($pdo) {
 
 function handleLogin($pdo) {
     header('Content-Type: application/json');
+    if (empty($_POST['email']) || empty($_POST['password'])) {
+        echo json_encode(['status' => 'error', 'message' => 'Veuillez remplir tous les champs.']);
+        exit;
+    }
 
     $email = $_POST['email'];
     $pass = $_POST['password'];
     
     $user = getUserByEmail($pdo, $email);
-
     if ($user && password_verify($pass, $user['password'])) {
+      
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['user_email'] = $user['email'];
-   
         $_SESSION['user_role'] = $user['role']; 
-        
+    
+        $redirectUrl = 'index.php?page=dashboard';
+
         if ($user['role'] === 'admin') {
-            echo json_encode(['status' => 'success', 'redirect' => 'index.php?page=admin_dashboard']);
-        } else {
-            echo json_encode(['status' => 'success', 'redirect' => 'index.php?page=dashboard']);
+            $redirectUrl = 'index.php?page=admin_dashboard';
+        } 
+       
+        elseif (isset($_SESSION['redirect_url'])) {
+            $redirectUrl = $_SESSION['redirect_url']; 
+            unset($_SESSION['redirect_url']);
         }
+
+        echo json_encode(['status' => 'success', 'redirect' => $redirectUrl]);
+        
+
     } else {
         echo json_encode(['status' => 'error', 'message' => 'Email ou mot de passe incorrect']);
     }

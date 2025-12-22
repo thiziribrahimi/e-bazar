@@ -132,7 +132,6 @@ function getCategoriesWithCounts($pdo) {
 
 // 10. Récupérer les N dernières annonces (pour l'accueil)
 function getRecentAnnonces($pdo, $limit = 4) {
-    // Note: On récupère photo pour la vignette (l'ancienne colonne ou une jointure si vous préférez)
     $sql = "SELECT annonces.*, categories.label as category_name 
             FROM annonces 
             LEFT JOIN categories ON annonces.category_id = categories.id 
@@ -170,5 +169,14 @@ function countAnnoncesByCategory($pdo, $categoryId) {
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['cat_id' => $categoryId]);
     return $stmt->fetchColumn();
+}
+// 13. Mettre à jour une catégorie (Admin)
+function updateCategory($pdo, $id, $label) {
+    $sql = "UPDATE categories SET label = :label WHERE id = :id";
+    $stmt = $pdo->prepare($sql);
+    return $stmt->execute([
+        'label' => $label,
+        'id' => $id
+    ]);
 }
 ?>

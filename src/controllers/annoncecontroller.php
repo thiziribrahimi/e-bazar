@@ -12,7 +12,11 @@ function showDetail($pdo) {
 
 
 function addAnnonce($pdo) {
-    if (!isset($_SESSION['user_id'])) { header('Location: index.php?page=login'); exit; }
+    if (!isset($_SESSION['user_id'])) { 
+        $_SESSION['redirect_url'] = 'index.php?page=add';
+        header('Location: index.php?page=login'); 
+        exit; 
+    }
     $categories = getAllCategories($pdo);
     require_once '../src/views/annonces/add.php';
 }
@@ -20,7 +24,15 @@ function addAnnonce($pdo) {
 
 function handleAddAnnonce($pdo) {
     if (!isset($_SESSION['user_id'])) { die("Accès refusé"); }
+    $titleLen = strlen($_POST['title']);
+    $descLen = strlen($_POST['description']);
 
+    if ($titleLen < 5 || $titleLen > 30) {
+        die("Erreur : Le titre doit faire entre 5 et 30 caractères.");
+    }
+    if ($descLen < 5 || $descLen > 200) {
+        die("Erreur : La description doit faire entre 5 et 200 caractères.");
+    }
     $uploadedFiles = [];
     $errors = [];
 
@@ -124,6 +136,10 @@ function deleteUserAnnonce($pdo) {
 // Afficher la page de confirmation d'achat
 function buy($pdo) {
     if (!isset($_SESSION['user_id'])) {
+       
+        if (isset($_GET['id'])) {
+            $_SESSION['redirect_url'] = 'index.php?page=buy&id=' . $_GET['id'];
+        }
         header('Location: index.php?page=login');
         exit;
     }
@@ -161,6 +177,32 @@ function handleBuy($pdo) {
     markAnnonceAsSold($pdo, $_POST['annonce_id'], $_SESSION['user_id']);
 
     header('Location: index.php?page=dashboard');
+    exit;
+}
+function confirmReceiptAJAX($pdo) {
+    header('Content-Type: application/json');
+    if (!isset($_SESSION['user_id']) || !isset($_POST['id'])) {
+        echo json_encode(['status' => 'error', 'message' => 'Non autorisé']);
+        exit;
+    }
+
+    $annonceId = $_POST['id'];
+    $userId = $_SESSION['user_id'];
+    $stmt = $pdo->prepare("SELECT * FROM annonces WHERE id = ? AND buyer_id = ?");
+    $stmt->execute([$annonceId, $userId]);
+    $annonce = $stmt->fetch();
+
+    if (!$annonce) {
+        echo json_encode(['status' => 'error', 'message' => 'Annonce introuvable ou vous n\'êtes pas l\'acheteur']);
+        exit;
+    }
+    $del = $pdo->prepare("DELETE FROM annonces WHERE id = ?");
+    
+    if ($del->execute([$annonceId])) {
+        echo json_encode(['status' => 'success']);
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'Erreur SQL lors de la suppression']);
+    }
     exit;
 }
 ?>

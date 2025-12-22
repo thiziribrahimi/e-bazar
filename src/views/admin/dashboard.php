@@ -31,13 +31,20 @@
                 </div>
                 <div class="col-md-6">
                     <h4>Liste des catégories</h4>
-                    <ul class="list-group">
-                        <?php foreach($categories as $cat): ?>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <?= htmlspecialchars($cat['label']) ?>
-                                </li>
-                        <?php endforeach; ?>
-                    </ul>
+<ul class="list-group">
+    <?php foreach($categories as $cat): ?>
+        <li class="list-group-item">
+            <form action="index.php?page=admin_edit_category" method="POST" class="d-flex justify-content-between align-items-center gap-2">
+                <input type="hidden" name="id" value="<?= $cat['id'] ?>">
+                
+                <input type="text" name="label" class="form-control form-control-sm" 
+                       value="<?= htmlspecialchars($cat['label']) ?>" required>
+                
+                <button type="submit" class="btn btn-sm btn-primary">Renommer</button>
+            </form>
+        </li>
+    <?php endforeach; ?>
+</ul>
                 </div>
             </div>
         </div>

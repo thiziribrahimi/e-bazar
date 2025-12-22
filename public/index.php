@@ -6,7 +6,7 @@ require_once '../config/db.php';
 
 $page = $_GET['page'] ?? 'home';
 
-// Liste des pages qui ne nécessitent pas le header/footer (AJAX ou actions pures)
+
 $apiRoutes = [
     'api_annonces',         
     'api_confirm_receipt',  
@@ -16,7 +16,6 @@ $apiRoutes = [
     'handle_buy'            
 ];
 
-// On affiche le layout (header + footer) uniquement si ce n'est pas une route API
 $showLayout = !in_array($page, $apiRoutes);
 
 if ($showLayout) {
@@ -49,10 +48,13 @@ switch ($page) {
         require_once '../src/controllers/admincontroller.php';
         adminDeleteAnnonce($pdo);
         break;
-    // --- NOUVEAU CASE AJOUTÉ ICI ---
     case 'category':
         require_once '../src/controllers/homecontroller.php';
         displayCategory($pdo);
+        break;
+    case 'admin_edit_category':
+        require_once '../src/controllers/admincontroller.php';
+        adminEditCategory($pdo);
         break;
     // -------------------------------
 

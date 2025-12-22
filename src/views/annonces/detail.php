@@ -86,9 +86,11 @@
 
             <?php else: ?>
                 <div class="alert alert-info text-center">
-                    <a href="index.php?page=login" class="fw-bold">Connectez-vous</a> pour acheter.
-                </div>
-            <?php endif; ?>
+                    <a href="index.php?page=buy&id=<?= $annonce['id'] ?>" class="fw-bold">
+                        Connectez-vous pour acheter
+                   </a>
+             </div>
+        <?php endif; ?>
         </div>
         
         <div class="mt-3">

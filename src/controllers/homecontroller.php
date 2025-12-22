@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__ . '/../models/annonce.php';
 
-// Affiche la page d'accueil (Catégories + 4 derniers articles)
 function displayHome($pdo) {
     // 1. Récupérer les catégories avec le compteur
     $categories = getCategoriesWithCounts($pdo);

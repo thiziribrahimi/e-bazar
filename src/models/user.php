@@ -23,4 +23,3 @@ function getUserByEmail($pdo, $email) {
     $stmt->execute(['email' => $email]);
     return $stmt->fetch();
 }
-?>

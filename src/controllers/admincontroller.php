@@ -13,16 +13,10 @@ function checkAdmin() {
 // Affiche le tableau de bord Admin
 function adminDashboard($pdo) {
     checkAdmin();
-
-    // 1. Récupérer toutes les catégories
     $categories = getAllCategories($pdo);
-    
-    // 2. Récupérer tous les utilisateurs (sauf l'admin lui-même)
-    // On suppose que l'admin a l'ID 1 ou un rôle 'admin'
     $sqlUsers = "SELECT * FROM users WHERE role != 'admin' ORDER BY id DESC";
     $users = $pdo->query($sqlUsers)->fetchAll();
 
-    // 3. Récupérer toutes les annonces
     $sqlAnnonces = "SELECT annonces.*, users.email as seller_email 
                     FROM annonces 
                     LEFT JOIN users ON annonces.user_id = users.id 
@@ -60,5 +54,16 @@ function adminDeleteAnnonce($pdo) {
         deleteAnnonce($pdo, $_GET['id']);
     }
     header('Location: index.php?page=admin_dashboard');
+}
+// Renommer une catégorie
+function adminEditCategory($pdo) {
+    checkAdmin(); 
+    
+    if (isset($_POST['id']) && !empty($_POST['label'])) {
+        updateCategory($pdo, $_POST['id'], $_POST['label']);
+    }
+
+    header('Location: index.php?page=admin_dashboard');
+    exit;
 }
 ?>
