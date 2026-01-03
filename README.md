@@ -4,7 +4,7 @@ Une plateforme de petites annonces en ligne réalisée en PHP natif avec une arc
 
 ---
 
-## 🚀 1. Installation Initiale
+##  1. Installation Initiale
 
 Si le projet n'est pas encore installé sur le serveur, suivez ces étapes :
 
@@ -37,7 +37,7 @@ try {
 }
 ?>
 ---
-## 🔄 2. Procédure de Mise à Jour (Déploiement)
+##  2. Procédure de Mise à Jour (Déploiement)
 
 Voici la procédure pour mettre à jour le site sur la VM après avoir fait un `git push` :
 
@@ -60,7 +60,7 @@ cd /var/www/html
 git pull
 Note : Si vous avez une erreur de permission "safe directory", lancez la commande suivante avant de refaire le pull : git config --global --add safe.directory /var/www/html
 
-🔑 3. Identifiants par défaut
+ 3. Identifiants par défaut
 Une fois la base de données importée, un compte administrateur est disponible :
 
 Email : admin@bazar.com
