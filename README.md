@@ -1,6 +1,6 @@
 # Projet e-bazar
 
-Une plateforme de petites annonces en ligne réalisée en PHP natif avec une architecture MVC.
+Une plateforme de petites annonces en ligne réalisée en PHP natif avec une architecture MVC(model/vue/controleur)
 
 ---
 
